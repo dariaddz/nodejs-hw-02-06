@@ -20,8 +20,6 @@ router.get("/", async (req, res, next) => {
   }
 });
 
-// node routes/api/contacts.js
-
 router.get("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
@@ -96,8 +94,28 @@ router.delete("/:contactId", async (req, res, next) => {
   }
 });
 
-// router.put("/:contactId", async (req, res, next) => {
-//   res.json({ message: "template message" });
-// });
+router.put("/:contactId", async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const { name, email, phone } = req.body;
+    const result = await operations.updateContact(
+      contactId,
+      name,
+      email,
+      phone
+    );
+    res.json({
+      message: "success",
+      code: 200,
+      data: { result },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Server error",
+    });
+  }
+});
 
 module.exports = router;
