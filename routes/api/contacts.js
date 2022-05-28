@@ -33,6 +33,7 @@ router.get("/:contactId", async (req, res, next) => {
         code: 404,
         message: `product with id=${contactId} not found`,
       });
+      return;
     }
     res.json({
       message: "success",
@@ -43,18 +44,57 @@ router.get("/:contactId", async (req, res, next) => {
     res.status(500).json({
       status: "error",
       code: 500,
-      message: "contact id",
+      message: "Server error",
     });
   }
 });
 
 router.post("/", async (req, res, next) => {
-  res.json({ message: "template message" });
+  try {
+    const { name, email, phone } = req.body;
+    const result = await operations.addContact(name, email, phone);
+    res.status(201).json({
+      status: "success",
+      code: 201,
+      data: { result },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Server error",
+    });
+  }
 });
 
-// router.delete("/:contactId", async (req, res, next) => {
-//   res.json({ message: "template message" });
-// });
+//  "name": "Belle",
+//       "email": "belle@mail.com",
+//       "phone": "(654)445-5487"
+
+router.delete("/:contactId", async (req, res, next) => {
+  try {
+    const { contactId } = req.params;
+    const contact = await operations.removeContact(contactId);
+    if (!contact) {
+      res.status(404).json({
+        status: "error",
+        code: 404,
+        message: `product with id=${contactId} not found`,
+      });
+    }
+    res.json({
+      message: "success",
+      code: 204,
+      data: { contact },
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: "error",
+      code: 500,
+      message: "Server error",
+    });
+  }
+});
 
 // router.put("/:contactId", async (req, res, next) => {
 //   res.json({ message: "template message" });

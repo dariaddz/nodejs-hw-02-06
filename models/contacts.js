@@ -29,9 +29,11 @@ const getContactById = async (contactId) => {
 const removeContact = async (contactId) => {
   try {
     const list = await listContacts();
+    const contactToDelete = await getContactById(contactId);
     const newList = list.filter((contact) => contact.id !== `${contactId}`);
 
     await fs.writeFile(contactsPath, JSON.stringify(newList));
+    return contactToDelete;
   } catch (err) {
     console.log(err);
   }
@@ -41,14 +43,16 @@ const addContact = async (name, email, phone) => {
   try {
     const newContact = {
       id: uuid.v4(),
-      name,
-      email,
-      phone,
+      name: name,
+      email: email,
+      phone: phone,
     };
+
     const list = await listContacts();
     list.push(newContact);
 
     await fs.writeFile(contactsPath, JSON.stringify(list));
+    return newContact;
   } catch (err) {
     console.log(err);
   }
