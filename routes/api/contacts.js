@@ -1,7 +1,7 @@
 const express = require("express");
-
 const router = express.Router();
 const operations = require("../../models/contacts.js");
+const contactSchema = require("../../schemas");
 
 router.get("/", async (req, res, next) => {
   try {
@@ -12,11 +12,7 @@ router.get("/", async (req, res, next) => {
       data: { contacts },
     });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      code: 500,
-      message: "Server error",
-    });
+    next(error);
   }
 });
 
@@ -26,12 +22,9 @@ router.get("/:contactId", async (req, res, next) => {
 
     const contact = await operations.getContactById(contactId);
     if (!contact) {
-      res.status(404).json({
-        status: "error",
-        code: 404,
-        message: `product with id=${contactId} not found`,
-      });
-      return;
+      const error = new Error(`contact with id=${contactId} not found`);
+      error.status = 404;
+      throw error;
     }
     res.json({
       message: "success",
@@ -39,82 +32,63 @@ router.get("/:contactId", async (req, res, next) => {
       data: { contact },
     });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      code: 500,
-      message: "Server error",
-    });
+    next(error);
   }
 });
 
 router.post("/", async (req, res, next) => {
   try {
-    const { name, email, phone } = req.body;
-    const result = await operations.addContact(name, email, phone);
+    const { error } = contactSchema.validate(req.body);
+    if (error) {
+      error.status = 400;
+      throw error;
+    }
+    const result = await operations.addContact(req.body);
     res.status(201).json({
-      status: "success",
+      status: "Posted",
       code: 201,
       data: { result },
     });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      code: 500,
-      message: "Server error",
-    });
+    next(error);
   }
 });
-
-//  "name": "Belle",
-//       "email": "belle@mail.com",
-//       "phone": "(654)445-5487"
 
 router.delete("/:contactId", async (req, res, next) => {
   try {
     const { contactId } = req.params;
     const contact = await operations.removeContact(contactId);
     if (!contact) {
-      res.status(404).json({
-        status: "error",
-        code: 404,
-        message: `product with id=${contactId} not found`,
-      });
+      const error = new Error(`contact with id=${contactId} not found`);
+      error.status = 404;
+      throw error;
     }
     res.json({
-      message: "success",
-      code: 204,
+      message: "deleted",
+      code: 200,
       data: { contact },
     });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      code: 500,
-      message: "Server error",
-    });
+    next(error);
   }
 });
 
 router.put("/:contactId", async (req, res, next) => {
   try {
+    const { error } = contactSchema.validate(req.body);
+    if (error) {
+      error.status = 400;
+      throw error;
+    }
     const { contactId } = req.params;
-    const { name, email, phone } = req.body;
-    const result = await operations.updateContact(
-      contactId,
-      name,
-      email,
-      phone
-    );
+    const result = await operations.updateContact(contactId, req.body);
     res.json({
-      message: "success",
+      message: "Updated",
       code: 200,
       data: { result },
     });
   } catch (error) {
-    res.status(500).json({
-      status: "error",
-      code: 500,
-      message: "Server error",
-    });
+    next(error);
   }
 });
 

@@ -2,15 +2,14 @@ const fs = require("fs/promises");
 const path = require("path");
 const uuid = require("uuid");
 
-const contactsPath = path.resolve(__dirname, "contacts.json");
+const contactsPath = path.join(__dirname, "contacts.json");
 
 const listContacts = async () => {
   try {
     const list = await fs.readFile(contactsPath, "utf8");
-
     return JSON.parse(list);
   } catch (error) {
-    console.log(error);
+    return error.message;
   }
 };
 
@@ -19,12 +18,10 @@ const getContactById = async (contactId) => {
     const list = await listContacts();
     const contact = list.find((item) => item.id === contactId);
     return contact;
-  } catch (error) {
-    console.log(error);
+  } catch (err) {
+    console.log(err);
   }
 };
-
-// node models/contacts.js
 
 const removeContact = async (contactId) => {
   try {
@@ -39,7 +36,7 @@ const removeContact = async (contactId) => {
   }
 };
 
-const addContact = async (name, email, phone) => {
+const addContact = async ({ name, email, phone }) => {
   try {
     const newContact = {
       id: uuid.v4(),
