@@ -3,11 +3,11 @@ const router = express.Router();
 
 const ctrl = require("../../controllers");
 
-router.get("/", ctrl.getAllContacts);
+router.get("/", ctrl.getAll);
 
 router.get("/:contactId", ctrl.getContactById);
 
-router.post("/", ctrl.postContact);
+// router.post("/", ctrl.postContact);
 
 router.delete("/:contactId", ctrl.deleteContact);
 
