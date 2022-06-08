@@ -1,3 +1,3 @@
 ## GoIT Node.js Course
 
-homework 03 ongoDB Database & Mongoose
+homework 03 MongoDB Database & Mongoose
