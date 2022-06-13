@@ -1,3 +1,3 @@
 const signup = require("./signup");
 
-module.export = signup;
+module.exports = { signup };
