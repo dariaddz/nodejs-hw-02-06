@@ -1,8 +1,6 @@
-const { Contact } = require("./contact");
+// const { Contact } = require("./contact");
 // const { User } = require("./user");
-console.log("Contact form index", Contact);
+// console.log("Contact form index", Contact);
 
-module.exports = {
-  Contact,
-  // User
-};
+// module.exports = { Contact, User };
+// // User
