@@ -5,6 +5,3 @@ module.exports = {
   contacts,
   userAuth,
 };
-
-// console.log("contacts", contacts);
-console.log("userAuth", userAuth);

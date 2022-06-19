@@ -15,8 +15,6 @@ const signup = async (req, res) => {
     code: 201,
     user: {
       result,
-      // email: email,
-      // subscription: "starter",
     },
   });
 };

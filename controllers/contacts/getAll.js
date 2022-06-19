@@ -1,5 +1,4 @@
 const { Contact } = require("../../models/contact");
-// console.log(Contact);
 
 const getAll = async (req, res) => {
   const { _id } = req.user;
