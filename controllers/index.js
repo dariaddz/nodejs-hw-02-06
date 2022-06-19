@@ -6,5 +6,5 @@ module.exports = {
   userAuth,
 };
 
-console.log("contacts", contacts);
+// console.log("contacts", contacts);
 console.log("userAuth", userAuth);
