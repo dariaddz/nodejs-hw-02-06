@@ -1,20 +1,25 @@
 const { Contact } = require("../../models/contact");
 
-const getAll = async (req, res) => {
-  const { _id } = req.user;
-  const { page = 1, limit } = req.query;
+const getAllContacts = async ({ _id, page, limit, favorite }) => {
   const skip = (page - 1) * limit;
-  const result = await Contact.find({ owner: _id }, "", {
+  if (!favorite) {
+    return await Contact.find({ owner: _id }, "", {
+      skip,
+      limit: Number(limit),
+    }).populate("owner", "email _id");
+  }
+  return await Contact.find({ owner: _id, favorite }, "", {
     skip,
     limit: Number(limit),
   }).populate("owner", "email _id");
-  res.json({
-    status: "success",
-    code: 200,
-    data: {
-      result,
-    },
-  });
+};
+
+const getAll = async (req, res) => {
+  const { _id } = req.user;
+  const { page = 1, limit, favorite } = req.query;
+  const result = await getAllContacts({ _id, page, limit, favorite });
+
+  res.json({ message: "Success", code: 200, data: { result } });
 };
 
 module.exports = getAll;
