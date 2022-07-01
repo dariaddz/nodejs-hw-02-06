@@ -14,6 +14,9 @@ const login = async (req, res) => {
   if (!user) {
     throw new Unauthorized(`User with email ${email} not found`);
   }
+  if (!user.verify) {
+    throw new Unauthorized(`Email ${email} is not confirmed`);
+  }
 
   const comparePass = bcrypt.compareSync(password, user.password);
   if (!comparePass) {
